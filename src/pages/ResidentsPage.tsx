@@ -59,6 +59,7 @@ function ResidentsPage() {
 
     if (isLoading) return <Loader />;
     if (isError || !residents) return <ErrorMessage message="לא הצלחנו לטעון את העמוד" />;
+
     return (
         <>
             <div className="page-header">
@@ -66,17 +67,13 @@ function ResidentsPage() {
                     <h1>דיירים</h1>
                     <p>{residents.length} דיירים בבניין</p>
                 </div>
+                {!showForm && (
+                    <button className="btn btn--accent" onClick={openNew}>
+                        + דייר חדש
+                    </button>
+                )}
             </div>
-            {!showForm && (
-                <button className="btn btn--accent" onClick={openNew}>
-                    + דייר חדש
-                </button>
-            )}
-            {residents.length === 0 && (
-                <div className="card empty-state">
-                    <div className="empty-state__icon">🏢</div>
-                    עדיין אין דיירים בבניין                </div>
-            )}
+
             {showForm && (
                 <div className="card" style={{ marginBottom: 24 }}>
                     <h2>{editing ? "עריכת דייר" : "דייר חדש"}</h2>
@@ -86,8 +83,11 @@ function ResidentsPage() {
                         defaultValues={
                             editing
                                 ? {
-                                    fullName: editing.fullName, email: editing.email,
-                                    apartment: editing.apartment ?? undefined, phone: editing.phone ?? undefined
+                                    fullName: editing.fullName,
+                                    email: editing.email ?? undefined,
+                                    apartment: editing.apartment ?? undefined,
+                                    phone: editing.phone ?? undefined,
+                                    isUnit: editing.isUnit,
                                 }
                                 : undefined
                         }
@@ -98,6 +98,14 @@ function ResidentsPage() {
                     />
                 </div>
             )}
+
+            {residents.length === 0 && (
+                <div className="card empty-state">
+                    <div className="empty-state__icon">🏢</div>
+                    עדיין אין דיירים בבניין
+                </div>
+            )}
+
             {residents.length > 0 && (
                 <div className="table-wrap">
                     <table className="table">
@@ -113,8 +121,9 @@ function ResidentsPage() {
                         <tbody>
                             {residents.map((r) => (
                                 <tr key={r.id}>
-                                    <td><strong>{apartmentLabel(r.apartment, r.isUnit)}</strong></td>                                    <td>{r.fullName}</td>
-                                    <td>{r.email}</td>
+                                    <td><strong>{apartmentLabel(r.apartment, r.isUnit)}</strong></td>
+                                    <td>{r.fullName}</td>
+                                    <td>{r.email ?? "–"}</td>
                                     <td className="num">{r.phone ?? "–"}</td>
                                     <td className="actions">
                                         <button className="btn btn--sm btn--secondary" onClick={() => openEdit(r)}>
@@ -131,7 +140,7 @@ function ResidentsPage() {
                 </div>
             )}
         </>
-    )
+    );
 }
 
 export default ResidentsPage;
