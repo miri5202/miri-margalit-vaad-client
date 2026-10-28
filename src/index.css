@@ -870,6 +870,23 @@ a:hover {
 .pay-cell--pending { background: var(--amber-100); color: #a16207; }
 .pay-cell--late    { background: var(--red-100); color: var(--red-600); }
 .pay-cell--none    { background: var(--gray-100); color: #b3b8c6; }
+/* שולם חלקית: חצי ירוק, חצי צהוב */
+.pay-cell--partial {
+  background: linear-gradient(135deg, var(--green-100) 50%, var(--amber-100) 50%);
+  color: #a16207;
+}
+
+/* שורת "תשלום חלקי" בתוך הטבלה: שדה סכום קטן + כפתורים */
+.partial-pay {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.partial-pay .input {
+  width: 90px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+}
 
 .legend {
   display: flex;
