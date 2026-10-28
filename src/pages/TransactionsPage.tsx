@@ -11,6 +11,7 @@ import type { Transaction, TransactionFilters } from "../types";
 import { downloadCsv } from "../utils/csv";
 import { apartmentLabel, formatDate } from "../utils/format";
 import { categoryLabels, paymentMethodLabels, statusLabels, typeLabels } from "../utils/labels";
+import { getErrorMessage } from "../utils/errors";
 
 function TransactionsPage() {
   const { buildingId } = useParams();
@@ -29,10 +30,17 @@ function TransactionsPage() {
   function refresh() {
     queryClient.invalidateQueries({ queryKey: ["transactions", id] });
     queryClient.invalidateQueries({ queryKey: ["summary", id] });
+    queryClient.invalidateQueries({ queryKey: ["payments-grid", id] });
   }
 
   const payMutation = useMutation({
     mutationFn: (t: Transaction) => markAsPaid(id, t.id),
+    onSuccess: refresh,
+  });
+
+  const partialMutation = useMutation({
+    mutationFn: ({ t, amount }: { t: Transaction; amount: number }) =>
+      markAsPaid(id, t.id, undefined, amount),
     onSuccess: refresh,
   });
 
@@ -56,7 +64,7 @@ function TransactionsPage() {
       do {
         const result = await getTransactions(id, { ...filters, page, limit: 100 });
         all.push(...result.items);
-        pages = result.page;
+        pages = result.pages;
         page++;
       } while (page <= pages);
 
@@ -80,7 +88,7 @@ function TransactionsPage() {
   }
 
   if (isLoading) return <Loader />;
-  if (isError || !data) return <ErrorMessage message="לא הצלחנו להתחבר לתנועות בבניין" />;
+  if (isError || !data) return <ErrorMessage message="לא הצלחנו לטעון את התנועות" />;
 
   return (
     <>
@@ -89,19 +97,24 @@ function TransactionsPage() {
           <h1>תנועות</h1>
           <p>סה"כ {data.total} תנועות</p>
         </div>
-        <button className="btn btn--secondary" onClick={handleExport} disabled={isExporting}>
-          {isExporting ? "מייצא..." : "📥 ייצוא"}
-        </button>
-        <Link className="btn btn--accent" to={`/buildings/${id}/transactions/new`}>
-          + תנועה חדשה
-        </Link>
+        <div className="actions">
+          <button className="btn btn--secondary" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? "מייצא..." : "📥 ייצוא"}
+          </button>
+          <Link className="btn btn--accent" to={`/buildings/${id}/transactions/new`}>
+            + תנועה חדשה
+          </Link>
+        </div>
       </div>
+
+      {partialMutation.isError && <ErrorMessage message={getErrorMessage(partialMutation.error)} />}
 
       <Filters filters={filters} onChange={setFilters} />
 
       <TransactionsTable
         transactions={data.items}
         onMarkPaid={(t) => payMutation.mutate(t)}
+        onPartialPay={(t, amount) => partialMutation.mutate({ t, amount })}
         onDelete={handleDelete}
         editPath={(t) => `/buildings/${id}/transactions/${t.id}/edit`}
       />

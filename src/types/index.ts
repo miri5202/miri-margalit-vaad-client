@@ -48,6 +48,7 @@ export interface Transaction {
   status: Status;
   description: string | null;
   isUnit: boolean;
+  remainder?: Transaction;
 }
 
 export interface ListResponse<T> {
@@ -101,8 +102,7 @@ export interface Summary {
   myDebt?: number;
 }
 
-export type PaymentCellStatus = Status | "none";
-export interface PaymentsGrid {
+export type PaymentCellStatus = Status | "none" | "partial";export interface PaymentsGrid {
   year: number;
   rows: { apartment: number; isUnit:boolean; residents: string[]; months: PaymentCellStatus[] }[];
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Transaction } from "../../types";
 import { categoryLabels, typeLabels } from "../../utils/labels";
@@ -7,13 +8,24 @@ import StatusBadge from "../common/StatusBadge";
 interface TransactionsTableProps {
   transactions: Transaction[];
   onMarkPaid?: (transaction: Transaction) => void;
+  onPartialPay?: (transaction: Transaction, amount: number) => void;
   onDelete?: (transaction: Transaction) => void;
   editPath?: (transaction: Transaction) => string;
   receiptPath?: (transaction: Transaction) => string;
 }
 
-function TransactionsTable({ transactions, onMarkPaid, onDelete, editPath, receiptPath }: TransactionsTableProps) {
-  const showActions = Boolean(onMarkPaid || onDelete || editPath || receiptPath);
+function TransactionsTable({
+  transactions,
+  onMarkPaid,
+  onPartialPay,
+  onDelete,
+  editPath,
+  receiptPath,
+}: TransactionsTableProps) {
+  const [partialId, setPartialId] = useState<number | null>(null);
+  const [partialAmount, setPartialAmount] = useState("");
+
+  const showActions = Boolean(onMarkPaid || onPartialPay || onDelete || editPath || receiptPath);
 
   if (transactions.length === 0) {
     return (
@@ -61,10 +73,47 @@ function TransactionsTable({ transactions, onMarkPaid, onDelete, editPath, recei
                       🧾 קבלה
                     </Link>
                   )}
-                  {onMarkPaid && t.type === "income" && t.status !== "paid" && (
+                  {onMarkPaid && t.type === "income" && t.status !== "paid" && partialId !== t.id && (
                     <button className="btn btn--sm btn--accent" onClick={() => onMarkPaid(t)}>
                       סמן כשולם
                     </button>
+                  )}
+                  {onPartialPay && t.type === "income" && t.status !== "paid" && (
+                    partialId === t.id ? (
+                      <span className="partial-pay">
+                        <input
+                          className="input"
+                          type="number"
+                          placeholder="סכום"
+                          autoFocus
+                          value={partialAmount}
+                          onChange={(e) => setPartialAmount(e.target.value)}
+                        />
+                        <button
+                          className="btn btn--sm btn--accent"
+                          disabled={!(Number(partialAmount) > 0 && Number(partialAmount) < t.amount)}
+                          onClick={() => {
+                            onPartialPay(t, Number(partialAmount));
+                            setPartialId(null);
+                          }}
+                        >
+                          אישור
+                        </button>
+                        <button className="btn btn--sm btn--ghost" onClick={() => setPartialId(null)}>
+                          ביטול
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        className="btn btn--sm btn--secondary"
+                        onClick={() => {
+                          setPartialId(t.id);
+                          setPartialAmount("");
+                        }}
+                      >
+                        תשלום חלקי
+                      </button>
+                    )
                   )}
                   {editPath && (
                     <Link className="btn btn--sm btn--secondary" to={editPath(t)}>

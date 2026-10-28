@@ -7,11 +7,13 @@ import type { PaymentCellStatus } from "../types";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
 import { getErrorMessage } from "../utils/errors";
+import { apartmentLabel } from "../utils/format";
 
 const MONTHS = ["ינו׳", "פבר׳", "מרץ", "אפר׳", "מאי", "יוני", "יולי", "אוג׳", "ספט׳", "אוק׳", "נוב׳", "דצמ׳"];
 
 const SYMBOLS: Record<PaymentCellStatus, string> = {
   paid: "✓",
+  partial: "½",
   pending: "…",
   late: "!",
   none: "–",
@@ -40,7 +42,7 @@ function PaymentGridPage() {
   });
 
   if (isLoading) return <Loader />;
-  if (isError || !grid) return <ErrorMessage message="לא הצחלנו לטעון את העמוד " />;
+  if (isError || !grid) return <ErrorMessage message="לא הצלחנו לטעון את העמוד" />;
 
   return (
     <>
@@ -86,9 +88,9 @@ function PaymentGridPage() {
           </thead>
           <tbody>
             {grid.rows.map((row) => (
-              <tr key={row.apartment}>
+              <tr key={`${row.apartment}-${row.isUnit}`}>
                 <td>
-                  <strong>דירה {row.apartment}</strong>{" "}
+                  <strong>{apartmentLabel(row.apartment, row.isUnit)}</strong>{" "}
                   <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>
                     {row.residents.join(", ")}
                   </span>
@@ -106,6 +108,7 @@ function PaymentGridPage() {
 
       <div className="legend">
         <span><i className="pay-cell pay-cell--paid">✓</i> שולם</span>
+        <span><i className="pay-cell pay-cell--partial">½</i> שולם חלקית</span>
         <span><i className="pay-cell pay-cell--pending">…</i> ממתין</span>
         <span><i className="pay-cell pay-cell--late">!</i> באיחור</span>
         <span><i className="pay-cell pay-cell--none">–</i> לא חויב</span>

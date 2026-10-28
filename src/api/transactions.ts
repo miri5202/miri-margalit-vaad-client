@@ -72,11 +72,12 @@ export async function deleteTransaction(buildingId: number, id: number): Promise
 export async function markAsPaid(
   buildingId: number,
   id: number,
-  paymentMethod?: PaymentMethod
+  paymentMethod?: PaymentMethod,
+  amount?: number
 ): Promise<Transaction> {
   const response = await api.patch<Transaction>(
     `/buildings/${buildingId}/transactions/${id}/pay`,
-    { paymentMethod }
+    { paymentMethod, amount }
   );
   return response.data;
 }
