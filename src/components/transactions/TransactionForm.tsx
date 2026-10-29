@@ -118,9 +118,11 @@ function TransactionForm({ defaultValues, onSubmit, isSubmitting, serverError }:
         <div className="field">
           <label htmlFor="status">סטטוס</label>
           <select id="status" {...register("status")}>
-            {Object.entries(statusLabels).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
+            {Object.entries(statusLabels)
+              .filter(([value]) => value !== "partial" || defaultValues?.status === "partial")
+              .map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
           </select>
         </div>
       </div>

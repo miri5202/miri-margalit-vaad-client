@@ -14,7 +14,8 @@ interface RegisterFormValues {
 }
 
 function RegisterPage() {
-    const { user, register: registerUser } = useAuth(); const navigate = useNavigate();
+    const { user, register: registerUser } = useAuth();
+    const navigate = useNavigate();
 
     const [serverError, setServerError] = useState("");
 
@@ -48,13 +49,17 @@ function RegisterPage() {
 
             <div className="auth-page__main">
                 <div className="auth-card">
-                    <h2>שלום וברכה 👋</h2>
-                    <p className="auth-card__sub">התחברו כדי לנהל את הבניין</p>
+                    <h2>הרשמת ועד חדש</h2>
+                    <p className="auth-card__sub">פתחו חשבון, ואחר כך תוכלו להוסיף את הבניינים שלכם</p>
 
                     <form className="form" onSubmit={handleSubmit(onSubmit)} noValidate>
                         <div className={errors.fullName ? "field field--error" : "field"}>
                             <label htmlFor="fullName">שם מלא</label>
-                            <input id="fullName" {...register("fullName", { required: "יש להזין שם מלא" })} />
+                            <input
+                                id="fullName"
+                                autoComplete="name"
+                                {...register("fullName", { required: "יש להזין שם מלא" })}
+                            />
                             {errors.fullName && <span className="field__error">{errors.fullName.message}</span>}
                         </div>
 
@@ -72,9 +77,18 @@ function RegisterPage() {
                             {errors.email && <span className="field__error">{errors.email.message}</span>}
                         </div>
 
-                        <div className="field">
+                        <div className={errors.phone ? "field field--error" : "field"}>
                             <label htmlFor="phone">טלפון</label>
-                            <input id="phone" type="tel" placeholder="לא חובה" {...register("phone")} />
+                            <input
+                                id="phone"
+                                type="tel"
+                                autoComplete="tel"
+                                placeholder="לא חובה"
+                                {...register("phone", {
+                                    pattern: { value: /^[\d\s+-]{9,15}$/, message: "מספר טלפון לא תקין" },
+                                })}
+                            />
+                            {errors.phone && <span className="field__error">{errors.phone.message}</span>}
                         </div>
 
                         <div className={errors.password ? "field field--error" : "field"}>
@@ -82,8 +96,11 @@ function RegisterPage() {
                             <input
                                 id="password"
                                 type="password"
-                                autoComplete="current-password"
-                                {...register("password", { required: "יש להזין סיסמה" })}
+                                autoComplete="new-password"
+                                {...register("password", {
+                                    required: "יש להזין סיסמה",
+                                    minLength: { value: 6, message: "הסיסמה חייבת להכיל לפחות 6 תווים" },
+                                })}
                             />
                             {errors.password && <span className="field__error">{errors.password.message}</span>}
                         </div>
@@ -99,18 +116,20 @@ function RegisterPage() {
                                     validate: (value) => value === watch("password") || "הסיסמאות לא תואמות",
                                 })}
                             />
-                            {errors.confirmPassword && <span className="field__error">{errors.confirmPassword.message}</span>}
+                            {errors.confirmPassword && (
+                                <span className="field__error">{errors.confirmPassword.message}</span>
+                            )}
                         </div>
 
                         {serverError && <div className="alert alert--error">{serverError}</div>}
 
                         <button className="btn btn--primary btn--block" type="submit" disabled={isSubmitting}>
-                            {isSubmitting ? "מתחבר..." : "כניסה"}
+                            {isSubmitting ? "נרשם..." : "הרשמה"}
                         </button>
                     </form>
 
                     <p className="auth-card__footer">
-                        כבר רשומים? <Link to="/register">להתחברות</Link>
+                        כבר רשומים? <Link to="/login">להתחברות</Link>
                     </p>
                 </div>
             </div>

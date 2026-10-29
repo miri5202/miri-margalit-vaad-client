@@ -9,7 +9,7 @@ export type Category =
   | "gardening"
   | "other";
 export type PaymentMethod = "cash" | "transfer" | "check" | "credit";
-export type Status = "paid" | "pending" | "late";
+export type Status = "paid" | "pending" | "late" | "partial";
 
 export interface User {
   id: number;
@@ -49,6 +49,7 @@ export interface Transaction {
   description: string | null;
   isUnit: boolean;
   remainder?: Transaction;
+  partialOf?: number | null;
 }
 
 export interface ListResponse<T> {
@@ -75,7 +76,7 @@ export interface BuildingInput {
   unitApartments?: number[] | string;
 }
 
-export type TransactionInput = Omit<Transaction, "id" | "buildingId">;
+export type TransactionInput = Omit<Transaction, "id" | "buildingId" | "remainder" | "partialOf">;
 
 export interface TransactionFilters {
   type?: TransactionType;
@@ -115,6 +116,7 @@ export interface Debtor {
   oldestDate: string;
   residents: { fullName: string; phone: string | null; email: string | null }[];
   isUnit: boolean;
+  partialCount: number;
 }
 
 export interface ResidentInput {

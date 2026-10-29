@@ -50,6 +50,7 @@ function Navbar() {
       </div>
 
       <div className="navbar__user">
+        {user.fullName}
         <button
           className="btn btn--sm btn--ghost"
           onClick={toggleTheme}
@@ -57,7 +58,6 @@ function Navbar() {
         >
           {theme === "dark" ? "☀️" : "🌙"}
         </button>
-        {user.fullName}
         <button className="btn btn--sm btn--ghost" onClick={handleLogout}>
           יציאה
         </button>

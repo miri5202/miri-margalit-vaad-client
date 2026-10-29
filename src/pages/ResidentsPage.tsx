@@ -8,6 +8,7 @@ import type { ResidentInput, User } from "../types";
 import ResidentForm from "../components/residents/ResidentForm";
 import { getErrorMessage } from "../utils/errors";
 import { apartmentLabel } from "../utils/format";
+import { getBuilding } from "../api/buildings";
 
 function ResidentsPage() {
     const { buildingId } = useParams();
@@ -16,6 +17,10 @@ function ResidentsPage() {
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState<User | null>(null);
     const queryClient = useQueryClient();
+    const { data: building } = useQuery({
+        queryKey: ["building", id],
+        queryFn: () => getBuilding(id),
+    });
 
     function openNew() {
         setEditing(null);
@@ -95,6 +100,7 @@ function ResidentsPage() {
                         onCancel={closeForm}
                         isSubmitting={saveMutation.isPending}
                         serverError={saveMutation.error ? getErrorMessage(saveMutation.error) : undefined}
+                        unitApartments={building?.unitApartments ?? []}
                     />
                 </div>
             )}

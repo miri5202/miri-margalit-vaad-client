@@ -5,6 +5,7 @@ export const statusLabels: Record<Status, string> = {
   paid: "שולם",
   pending: "ממתין",
   late: "באיחור",
+  partial: "שולם חלקית",
 };
 
 export const typeLabels: Record<TransactionType, string> = {
