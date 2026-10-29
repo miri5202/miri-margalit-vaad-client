@@ -122,7 +122,7 @@ function DashboardPage() {
 
       {announcements && (
         <div className="mt-8">
-          <AnnouncementsBoard announcements={announcements} />
+          <AnnouncementsBoard buildingId={id} announcements={announcements} canEdit={isAdmin} />
         </div>
       )}
     </>

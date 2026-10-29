@@ -146,3 +146,9 @@ export interface Announcement {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface AnnouncementInput {
+  title: string;
+  body: string;
+  pinned: boolean;
+}
