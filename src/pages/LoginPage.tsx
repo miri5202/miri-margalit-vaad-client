@@ -50,7 +50,7 @@ function LoginPage() {
   return (
     <AuthLayout>
       <form
-        className="relative grid max-w-md gap-3 rounded-3xl border-[2.5px] border-ink bg-paper p-5"
+        className="relative grid max-w-lg gap-3 rounded-3xl border-[2.5px] border-ink bg-paper p-5"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
@@ -84,14 +84,13 @@ function LoginPage() {
           {isSubmitting ? "מתחבר..." : "כניסה ←"}
         </button>
 
-        <div className="flex flex-wrap items-center gap-2 border-t-2 border-dashed border-line pt-3">
-          <span className="font-hand text-sm text-coral">✎ לבדיקת האתר:</span>
-            <button type="button" className={btn("secondary", "sm")} onClick={() => fillDemo("admin@vaad.test")}>
-              כניסה כוועד בית
-            </button>
-            <button type="button" className={btn("secondary", "sm")} onClick={() => fillDemo("apt2@vaad.test")}>
-              כניסה כדייר
-            </button>
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t-2 border-dashed border-line pt-3">
+          <button type="button" className={btn("secondary", "sm")} onClick={() => fillDemo("admin@vaad.test")}>
+            כניסה כוועד בית
+          </button>
+          <button type="button" className={btn("secondary", "sm")} onClick={() => fillDemo("apt2@vaad.test")}>
+            כניסה כדייר
+          </button>
         </div>
 
         <p className="text-center text-sm text-muted">

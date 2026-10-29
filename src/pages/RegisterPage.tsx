@@ -47,7 +47,7 @@ function RegisterPage() {
   return (
     <AuthLayout>
       <form
-        className="relative grid max-w-md gap-4 rounded-3xl border-[2.5px] border-ink bg-paper p-5 sm:p-6"
+        className="relative grid max-w-lg gap-4 rounded-3xl border-[2.5px] border-ink bg-paper p-5 sm:p-6"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
