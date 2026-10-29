@@ -50,13 +50,13 @@ function LoginPage() {
   return (
     <AuthLayout>
       <form
-        className="relative grid max-w-md gap-4 rounded-3xl border-[2.5px] border-ink bg-paper p-5 sm:p-6"
+        className="relative grid max-w-md gap-3 rounded-3xl border-[2.5px] border-ink bg-paper p-5"
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
         {/* נייר דבק */}
         <span className="absolute -top-3 right-10 h-6 w-24 -rotate-[4deg] rounded-sm bg-sun/75" aria-hidden="true" />
-        <h2 className="text-2xl">כניסה</h2>
+        <h2 className="text-2xl leading-none">כניסה</h2>
 
         <Field label="אימייל או טלפון" htmlFor="login" error={errors.login?.message}>
           <input
@@ -84,19 +84,17 @@ function LoginPage() {
           {isSubmitting ? "מתחבר..." : "כניסה ←"}
         </button>
 
-        <div className="grid gap-2 border-t-2 border-dashed border-line pt-4">
-          <span className="font-hand text-coral">✎ רוצים לבדוק את האתר? (סיסמה: 123456)</span>
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2 border-t-2 border-dashed border-line pt-3">
+          <span className="font-hand text-sm text-coral">✎ לבדיקת האתר:</span>
             <button type="button" className={btn("secondary", "sm")} onClick={() => fillDemo("admin@vaad.test")}>
               כניסה כוועד בית
             </button>
             <button type="button" className={btn("secondary", "sm")} onClick={() => fillDemo("apt2@vaad.test")}>
               כניסה כדייר
             </button>
-          </div>
         </div>
 
-        <p className="text-center text-muted">
+        <p className="text-center text-sm text-muted">
           ועד חדש?{" "}
           <Link to="/register" className="font-bold text-ink underline decoration-sun decoration-4 underline-offset-2">
             להרשמה
