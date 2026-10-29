@@ -103,7 +103,9 @@ export interface Summary {
   myDebt?: number;
 }
 
-export type PaymentCellStatus = Status | "none" | "partial";export interface PaymentsGrid {
+export type PaymentCellStatus = Status | "none";
+
+export interface PaymentsGrid {
   year: number;
   rows: { apartment: number; isUnit:boolean; residents: string[]; months: PaymentCellStatus[] }[];
 }
@@ -133,4 +135,14 @@ export interface ChargeResult {
   amount: number;
   created: number;
   skipped: number;
+}
+
+export interface Announcement {
+  id: number;
+  title: string;
+  body: string;
+  pinned: boolean;
+  authorName: string | null;
+  createdAt: string;
+  updatedAt: string;
 }

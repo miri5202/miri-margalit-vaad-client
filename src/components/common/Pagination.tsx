@@ -1,23 +1,25 @@
+import { btn } from "../../utils/ui";
+
 interface PaginationProps {
-  page: number;                         
-  pages: number;                     
-  onChange: (page: number) => void;   
+  page: number;
+  pages: number;
+  onChange: (page: number) => void;
 }
 
+// מעבר בין עמודים ברשימה ארוכה
 function Pagination({ page, pages, onChange }: PaginationProps) {
-
   if (pages <= 1) return null;
 
   return (
-    <div className="pagination">
-      <button disabled={page === 1} onClick={() => onChange(page - 1)}>
-        ›
+    <div className="mt-6 flex items-center justify-center gap-3">
+      <button className={btn("secondary", "sm")} disabled={page === 1} onClick={() => onChange(page - 1)}>
+        › הקודם
       </button>
-      <span>
+      <span className="font-hand">
         עמוד {page} מתוך {pages}
       </span>
-      <button disabled={page === pages} onClick={() => onChange(page + 1)}>
-        ‹
+      <button className={btn("secondary", "sm")} disabled={page === pages} onClick={() => onChange(page + 1)}>
+        הבא ‹
       </button>
     </div>
   );

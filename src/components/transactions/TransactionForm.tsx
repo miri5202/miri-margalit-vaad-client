@@ -1,6 +1,9 @@
 import { useForm } from "react-hook-form";
 import type { TransactionInput } from "../../types";
 import { categoryLabels, paymentMethodLabels, statusLabels } from "../../utils/labels";
+import Field from "../ui/Field";
+import ErrorMessage from "../common/ErrorMessage";
+import { btn, input } from "../../utils/ui";
 
 interface TransactionFormProps {
   defaultValues?: Partial<TransactionInput>;
@@ -10,6 +13,10 @@ interface TransactionFormProps {
 }
 
 const today = new Date().toISOString().slice(0, 10);
+
+// בחירת הכנסה / הוצאה: שני כפתורים, והנבחר צבוע (has-checked = יש בתוכו radio מסומן)
+const typeOption =
+  "flex-1 cursor-pointer rounded-xl px-4 py-2 text-center font-bold transition-colors has-checked:bg-sun has-checked:text-deep has-checked:shadow-sketch-sm";
 
 function TransactionForm({ defaultValues, onSubmit, isSubmitting, serverError }: TransactionFormProps) {
   const {
@@ -40,107 +47,107 @@ function TransactionForm({ defaultValues, onSubmit, isSubmitting, serverError }:
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit(submit)} noValidate>
-      <div className="segmented">
-        <label>
-          <input type="radio" value="income" {...register("type")} /> הכנסה
+    <form className="grid gap-4" onSubmit={handleSubmit(submit)} noValidate>
+      <div className="flex max-w-xs gap-1 rounded-2xl border-2 border-ink bg-paper p-1">
+        <label className={typeOption}>
+          <input type="radio" value="income" className="sr-only" {...register("type")} /> ↓ הכנסה
         </label>
-        <label>
-          <input type="radio" value="expense" {...register("type")} /> הוצאה
+        <label className={typeOption}>
+          <input type="radio" value="expense" className="sr-only" {...register("type")} /> ↑ הוצאה
         </label>
       </div>
 
-      <div className="form-row">
-        <div className={errors.amount ? "field field--error" : "field"}>
-          <label htmlFor="amount">סכום (₪)</label>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="סכום (₪)" htmlFor="amount" error={errors.amount?.message}>
           <input
             id="amount"
             type="number"
+            className={input(Boolean(errors.amount))}
             {...register("amount", {
               valueAsNumber: true,
               required: "יש להזין סכום",
               min: { value: 1, message: "הסכום חייב להיות חיובי" },
             })}
           />
-          {errors.amount && <span className="field__error">{errors.amount.message}</span>}
-        </div>
+        </Field>
 
-        <div className={errors.date ? "field field--error" : "field"}>
-          <label htmlFor="date">תאריך</label>
-          <input id="date" type="date" {...register("date", { required: "יש לבחור תאריך" })} />
-          {errors.date && <span className="field__error">{errors.date.message}</span>}
-        </div>
+        <Field label="תאריך" htmlFor="date" error={errors.date?.message}>
+          <input id="date" type="date" className={input(Boolean(errors.date))} {...register("date", { required: "יש לבחור תאריך" })} />
+        </Field>
       </div>
 
-      <div className="form-row">
-        <div className="field">
-          <label htmlFor="category">קטגוריה</label>
-          <select id="category" {...register("category")}>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="קטגוריה" htmlFor="category">
+          <select id="category" className={input()} {...register("category")}>
             {Object.entries(categoryLabels).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
+              <option key={value} value={value}>
+                {label}
+              </option>
             ))}
           </select>
-        </div>
+        </Field>
 
         {type === "income" ? (
-          <div className={errors.apartment ? "field field--error" : "field"}>
-            <label htmlFor="apartment">מספר דירה</label>
+          <Field label="מספר דירה" htmlFor="apartment" error={errors.apartment?.message}>
             <input
               id="apartment"
               type="number"
+              className={input(Boolean(errors.apartment))}
               {...register("apartment", {
                 valueAsNumber: true,
                 required: "בהכנסה חובה לציין דירה",
                 min: { value: 1, message: "מספר דירה לא תקין" },
               })}
             />
-            {errors.apartment && <span className="field__error">{errors.apartment.message}</span>}
-          </div>
+          </Field>
         ) : (
-          <div className={errors.supplier ? "field field--error" : "field"}>
-            <label htmlFor="supplier">ספק</label>
-            <input id="supplier" {...register("supplier", { required: "בהוצאה חובה לציין ספק" })} />
-            {errors.supplier && <span className="field__error">{errors.supplier.message}</span>}
-          </div>
+          <Field label="ספק" htmlFor="supplier" error={errors.supplier?.message}>
+            <input
+              id="supplier"
+              className={input(Boolean(errors.supplier))}
+              {...register("supplier", { required: "בהוצאה חובה לציין ספק" })}
+            />
+          </Field>
         )}
       </div>
 
-      <div className="form-row">
-        <div className="field">
-          <label htmlFor="paymentMethod">אמצעי תשלום</label>
-          <select id="paymentMethod" {...register("paymentMethod")}>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="אמצעי תשלום" htmlFor="paymentMethod">
+          <select id="paymentMethod" className={input()} {...register("paymentMethod")}>
             {Object.entries(paymentMethodLabels).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
+              <option key={value} value={value}>
+                {label}
+              </option>
             ))}
           </select>
-        </div>
+        </Field>
 
-        <div className="field">
-          <label htmlFor="status">סטטוס</label>
-          <select id="status" {...register("status")}>
+        <Field label="סטטוס" htmlFor="status">
+          <select id="status" className={input()} {...register("status")}>
             {Object.entries(statusLabels)
               .filter(([value]) => value !== "partial" || defaultValues?.status === "partial")
               .map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
+                <option key={value} value={value}>
+                  {label}
+                </option>
               ))}
           </select>
-        </div>
+        </Field>
       </div>
 
-      <div className="field">
-        <label htmlFor="description">תיאור</label>
+      <Field label="תיאור" htmlFor="description" error={errors.description?.message}>
         <textarea
           id="description"
           placeholder="לא חובה"
+          className={`${input(Boolean(errors.description))} min-h-24 resize-y`}
           {...register("description", { maxLength: { value: 500, message: "עד 500 תווים" } })}
         />
-        {errors.description && <span className="field__error">{errors.description.message}</span>}
-      </div>
+      </Field>
 
-      {serverError && <div className="alert alert--error">{serverError}</div>}
+      {serverError && <ErrorMessage message={serverError} />}
 
-      <div className="actions">
-        <button className="btn btn--primary" type="submit" disabled={isSubmitting}>
+      <div>
+        <button className={btn("primary")} type="submit" disabled={isSubmitting}>
           {isSubmitting ? "שומר..." : "שמירה"}
         </button>
       </div>

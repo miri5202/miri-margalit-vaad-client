@@ -7,6 +7,7 @@ import TransactionsTable from "../components/transactions/TransactionsTable";
 import Pagination from "../components/common/Pagination";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
+import PageHeader from "../components/ui/PageHeader";
 
 function ExpensesPage() {
   const { buildingId } = useParams();
@@ -24,12 +25,7 @@ function ExpensesPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1>הוצאות הבניין</h1>
-          <p>לאן הולך הכסף של הוועד</p>
-        </div>
-      </div>
+      <PageHeader title="הוצאות הבניין" subtitle="לאן הולך הכסף של הוועד" />
 
       <TransactionsTable transactions={data.items} />
 

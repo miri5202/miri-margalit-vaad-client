@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Transaction } from "../../types";
-import { categoryLabels, typeLabels } from "../../utils/labels";
+import { categoryLabels } from "../../utils/labels";
 import { apartmentLabel, formatDate, formatMoney } from "../../utils/format";
 import StatusBadge from "../common/StatusBadge";
+import EmptyState from "../common/EmptyState";
+import { btn, cn, input, table, tableWrap, td, th } from "../../utils/ui";
 
 interface TransactionsTableProps {
   transactions: Transaction[];
@@ -14,6 +16,7 @@ interface TransactionsTableProps {
   receiptPath?: (transaction: Transaction) => string;
 }
 
+// טבלת תנועות: משמשת את עמוד התנועות (ועד), "התשלומים שלי" (דייר) ו"הוצאות"
 function TransactionsTable({
   transactions,
   onMarkPaid,
@@ -22,109 +25,126 @@ function TransactionsTable({
   editPath,
   receiptPath,
 }: TransactionsTableProps) {
+  // איזו שורה פתוחה עכשיו לתשלום חלקי, ומה הסכום שהוקלד
   const [partialId, setPartialId] = useState<number | null>(null);
   const [partialAmount, setPartialAmount] = useState("");
 
   const showActions = Boolean(onMarkPaid || onPartialPay || onDelete || editPath || receiptPath);
 
   if (transactions.length === 0) {
-    return (
-      <div className="card empty-state">
-        <div className="empty-state__icon">📭</div>
-        לא נמצאו תנועות
-      </div>
-    );
+    return <EmptyState icon="📭">לא נמצאו תנועות</EmptyState>;
   }
 
   return (
-    <div className="table-wrap">
-      <table className="table">
+    <div className={tableWrap}>
+      <table className={table}>
         <thead>
           <tr>
-            <th>תאריך</th>
-            <th>סוג</th>
-            <th>קטגוריה</th>
-            <th>דירה / ספק</th>
-            <th>סכום</th>
-            <th>סטטוס</th>
-            <th>תיאור</th>
-            {showActions && <th></th>}
+            <th className={th}>תאריך</th>
+            <th className={th}>סוג</th>
+            <th className={th}>קטגוריה</th>
+            <th className={th}>דירה / ספק</th>
+            <th className={th}>סכום</th>
+            <th className={th}>סטטוס</th>
+            <th className={th}>תיאור</th>
+            {showActions && <th className={th}></th>}
           </tr>
         </thead>
         <tbody>
           {transactions.map((t) => (
-            <tr key={t.id}>
-              <td className="num">{formatDate(t.date)}</td>
-              <td>
-                <span className={`badge badge--${t.type}`}>{typeLabels[t.type]}</span>
+            <tr key={t.id} className="transition-colors hover:bg-soft">
+              <td className={cn(td, "num text-right whitespace-nowrap")}>{formatDate(t.date)}</td>
+              <td className={td}>
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs font-bold whitespace-nowrap text-deep",
+                    t.type === "income" ? "bg-sun/60" : "bg-blush"
+                  )}
+                >
+                  {t.type === "income" ? "↓ הכנסה" : "↑ הוצאה"}
+                </span>
               </td>
-              <td>{categoryLabels[t.category]}</td>
-              <td>{t.type === "income" ? apartmentLabel(t.apartment, t.isUnit) : t.supplier}</td>
-              <td className={`amount amount--${t.type}`}>{formatMoney(t.amount)}</td>
-              <td>
+              <td className={cn(td, "whitespace-nowrap")}>{categoryLabels[t.category]}</td>
+              <td className={cn(td, "whitespace-nowrap")}>
+                {t.type === "income" ? apartmentLabel(t.apartment, t.isUnit) : t.supplier}
+              </td>
+              <td
+                className={cn(
+                  td,
+                  "num text-right font-bold whitespace-nowrap",
+                  t.type === "income" ? "text-paid-text dark:text-mint" : "text-late-text dark:text-late"
+                )}
+              >
+                {formatMoney(t.amount)}
+              </td>
+              <td className={td}>
                 <StatusBadge status={t.status} />
               </td>
-              <td>{t.description}</td>
+              <td className={cn(td, "min-w-40 text-muted")}>{t.description}</td>
 
               {showActions && (
-                <td className="actions">
-                  {receiptPath && t.type === "income" && t.status === "paid" && (
-                    <Link className="btn btn--sm btn--secondary" to={receiptPath(t)}>
-                      🧾 קבלה
-                    </Link>
-                  )}
-                  {onMarkPaid && t.type === "income" && t.status !== "paid" && partialId !== t.id && (
-                    <button className="btn btn--sm btn--accent" onClick={() => onMarkPaid(t)}>
-                      סמן כשולם
-                    </button>
-                  )}
-                  {onPartialPay && t.type === "income" && t.status !== "paid" && (
-                    partialId === t.id ? (
-                      <span className="partial-pay">
-                        <input
-                          className="input"
-                          type="number"
-                          placeholder="סכום"
-                          autoFocus
-                          value={partialAmount}
-                          onChange={(e) => setPartialAmount(e.target.value)}
-                        />
+                <td className={td}>
+                  <div className="flex flex-nowrap items-center gap-2">
+                    {receiptPath && t.type === "income" && t.status === "paid" && (
+                      <Link className={btn("secondary", "sm")} to={receiptPath(t)}>
+                        🧾 קבלה
+                      </Link>
+                    )}
+                    {onMarkPaid && t.type === "income" && t.status !== "paid" && partialId !== t.id && (
+                      <button className={btn("accent", "sm")} onClick={() => onMarkPaid(t)}>
+                        סמן כשולם
+                      </button>
+                    )}
+                    {onPartialPay &&
+                      t.type === "income" &&
+                      t.status !== "paid" &&
+                      (partialId === t.id ? (
+                        <span className="inline-flex items-center gap-2">
+                          <input
+                            className={cn(input(), "w-24 py-1.5 text-sm")}
+                            type="number"
+                            placeholder="סכום"
+                            aria-label="הסכום ששולם"
+                            autoFocus
+                            value={partialAmount}
+                            onChange={(e) => setPartialAmount(e.target.value)}
+                          />
+                          <button
+                            className={btn("accent", "sm")}
+                            disabled={!(Number(partialAmount) > 0 && Number(partialAmount) < t.amount)}
+                            onClick={() => {
+                              onPartialPay(t, Number(partialAmount));
+                              setPartialId(null);
+                            }}
+                          >
+                            אישור
+                          </button>
+                          <button className={btn("ghost", "sm")} onClick={() => setPartialId(null)}>
+                            ביטול
+                          </button>
+                        </span>
+                      ) : (
                         <button
-                          className="btn btn--sm btn--accent"
-                          disabled={!(Number(partialAmount) > 0 && Number(partialAmount) < t.amount)}
+                          className={btn("secondary", "sm")}
                           onClick={() => {
-                            onPartialPay(t, Number(partialAmount));
-                            setPartialId(null);
+                            setPartialId(t.id);
+                            setPartialAmount("");
                           }}
                         >
-                          אישור
+                          תשלום חלקי
                         </button>
-                        <button className="btn btn--sm btn--ghost" onClick={() => setPartialId(null)}>
-                          ביטול
-                        </button>
-                      </span>
-                    ) : (
-                      <button
-                        className="btn btn--sm btn--secondary"
-                        onClick={() => {
-                          setPartialId(t.id);
-                          setPartialAmount("");
-                        }}
-                      >
-                        תשלום חלקי
+                      ))}
+                    {editPath && (
+                      <Link className={btn("secondary", "sm")} to={editPath(t)}>
+                        עריכה
+                      </Link>
+                    )}
+                    {onDelete && (
+                      <button className={btn("danger", "sm")} onClick={() => onDelete(t)}>
+                        מחיקה
                       </button>
-                    )
-                  )}
-                  {editPath && (
-                    <Link className="btn btn--sm btn--secondary" to={editPath(t)}>
-                      עריכה
-                    </Link>
-                  )}
-                  {onDelete && (
-                    <button className="btn btn--sm btn--danger" onClick={() => onDelete(t)}>
-                      מחיקה
-                    </button>
-                  )}
+                    )}
+                  </div>
                 </td>
               )}
             </tr>

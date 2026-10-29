@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { useAuth } from "./context/AuthContext";
 import LoginPage from "./pages/LoginPage";
@@ -16,12 +16,14 @@ import PaymentGridPage from "./pages/PaymentGridPage";
 import DebtorsPage from "./pages/DebtorsPage";
 import ResidentsPage from "./pages/ResidentsPage";
 import ReceiptPage from "./pages/ReceiptPage";
+import Loader from "./components/common/Loader";
+import { btn } from "./utils/ui";
 
 function App() {
   const { isLoading, user } = useAuth();
 
   if (isLoading) {
-    return <div className="loader">טוען...</div>;
+    return <Loader />;
   }
 
   return (
@@ -45,7 +47,20 @@ function App() {
       </Route>
       <Route path="/" element={<Navigate to={user ? homePath(user) : "/login"} replace />} />
 
-      <Route path="*" element={<h1 className="page">העמוד לא נמצא 🤷</h1>} />
+      <Route
+        path="*"
+        element={
+          <div className="grid min-h-screen place-items-center bg-paper p-6 text-center">
+            <div>
+              <div className="mb-2 text-6xl" aria-hidden="true">🏚️</div>
+              <h1 className="mb-4 text-4xl">העמוד לא נמצא</h1>
+              <Link to="/" className={btn("primary")}>
+                חזרה לדף הבית
+              </Link>
+            </div>
+          </div>
+        }
+      />
     </Routes>
   );
 }

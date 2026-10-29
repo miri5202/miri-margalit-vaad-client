@@ -7,9 +7,10 @@ import type { BuildingInput } from "../types";
 import BuildingCard from "../components/Buildings/BuildingCard";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
+import PageHeader from "../components/ui/PageHeader";
+import { card } from "../utils/ui";
 
 function BuildingsPage() {
-
   const [showForm, setShowForm] = useState(false);
   const queryClient = useQueryClient();
 
@@ -21,8 +22,8 @@ function BuildingsPage() {
   const createMutation = useMutation({
     mutationFn: (data: BuildingInput) => createBuilding(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["buildings"] }); 
-      setShowForm(false);                                          
+      queryClient.invalidateQueries({ queryKey: ["buildings"] });
+      setShowForm(false);
     },
   });
 
@@ -31,15 +32,11 @@ function BuildingsPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1>הבניינים שלי</h1>
-          <p>בחרו בניין כדי לנהל אותו</p>
-        </div>
-      </div>
+      <PageHeader title="הבניינים שלי" subtitle="בחרו בניין כדי לנהל אותו" />
 
       {showForm && (
-        <div className="card section" style={{ marginBottom: 24 }}>          <h2>בניין חדש</h2>
+        <div className={`${card} mb-6`}>
+          <h2 className="mb-4 text-2xl">בניין חדש</h2>
           <BuildingForm
             onSubmit={(data) => createMutation.mutate(data)}
             onCancel={() => setShowForm(false)}
@@ -49,12 +46,15 @@ function BuildingsPage() {
         </div>
       )}
 
-      <div className="card-grid">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {buildings?.map((building) => (
           <BuildingCard key={building.id} building={building} />
         ))}
         {!showForm && (
-          <button className="add-card" onClick={() => setShowForm(true)}>
+          <button
+            onClick={() => setShowForm(true)}
+            className="grid min-h-48 cursor-pointer place-items-center rounded-3xl border-[2.5px] border-dashed border-ink/50 bg-transparent font-hand text-lg font-semibold text-muted transition-colors hover:border-ink hover:bg-sun/30 hover:text-ink"
+          >
             + הוספת בניין
           </button>
         )}

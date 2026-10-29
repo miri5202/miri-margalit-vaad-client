@@ -9,6 +9,9 @@ import ResidentForm from "../components/residents/ResidentForm";
 import { getErrorMessage } from "../utils/errors";
 import { apartmentLabel } from "../utils/format";
 import { getBuilding } from "../api/buildings";
+import PageHeader from "../components/ui/PageHeader";
+import EmptyState from "../components/common/EmptyState";
+import { btn, card, cn, table, tableWrap, td, th } from "../utils/ui";
 
 function ResidentsPage() {
     const { buildingId } = useParams();
@@ -67,21 +70,17 @@ function ResidentsPage() {
 
     return (
         <>
-            <div className="page-header">
-                <div>
-                    <h1>דיירים</h1>
-                    <p>{residents.length} דיירים בבניין</p>
-                </div>
+            <PageHeader title="דיירים" subtitle={`${residents.length} דיירים בבניין`}>
                 {!showForm && (
-                    <button className="btn btn--accent" onClick={openNew}>
+                    <button className={btn("primary")} onClick={openNew}>
                         + דייר חדש
                     </button>
                 )}
-            </div>
+            </PageHeader>
 
             {showForm && (
-                <div className="card" style={{ marginBottom: 24 }}>
-                    <h2>{editing ? "עריכת דייר" : "דייר חדש"}</h2>
+                <div className={cn(card, "mb-6")}>
+                    <h2 className="mb-4 text-2xl">{editing ? "עריכת דייר" : "דייר חדש"}</h2>
                     <ResidentForm
                         key={editing?.id ?? "new"}
                         isEdit={editing !== null}
@@ -105,39 +104,48 @@ function ResidentsPage() {
                 </div>
             )}
 
-            {residents.length === 0 && (
-                <div className="card empty-state">
-                    <div className="empty-state__icon">🏢</div>
-                    עדיין אין דיירים בבניין
-                </div>
-            )}
-
-            {residents.length > 0 && (
-                <div className="table-wrap">
-                    <table className="table">
+            {residents.length === 0 ? (
+                <EmptyState icon="🏢">עדיין אין דיירים בבניין</EmptyState>
+            ) : (
+                <div className={tableWrap}>
+                    <table className={table}>
                         <thead>
                             <tr>
-                                <th>דירה</th>
-                                <th>שם</th>
-                                <th>אימייל</th>
-                                <th>טלפון</th>
-                                <th></th>
+                                <th className={th}>דירה</th>
+                                <th className={th}>שם</th>
+                                <th className={th}>אימייל</th>
+                                <th className={th}>טלפון</th>
+                                <th className={th}></th>
                             </tr>
                         </thead>
                         <tbody>
                             {residents.map((r) => (
-                                <tr key={r.id}>
-                                    <td><strong>{apartmentLabel(r.apartment, r.isUnit)}</strong></td>
-                                    <td>{r.fullName}</td>
-                                    <td>{r.email ?? "–"}</td>
-                                    <td className="num">{r.phone ?? "–"}</td>
-                                    <td className="actions">
-                                        <button className="btn btn--sm btn--secondary" onClick={() => openEdit(r)}>
-                                            עריכה
-                                        </button>
-                                        <button className="btn btn--sm btn--danger" onClick={() => handleDelete(r)}>
-                                            מחיקה
-                                        </button>
+                                <tr key={r.id} className="hover:bg-soft">
+                                    <td className={cn(td, "whitespace-nowrap")}>
+                                        <strong>{apartmentLabel(r.apartment, r.isUnit)}</strong>
+                                    </td>
+                                    <td className={td}>
+                                        {r.fullName}
+                                        {!r.email && !r.phone && (
+                                            <span
+                                                className="ms-2 inline-flex rounded-lg border-2 border-dashed border-ink/60 px-2 py-0.5 text-xs text-muted"
+                                                title="אין לדייר אימייל או טלפון, ולכן הוא לא יכול להתחבר לאתר"
+                                            >
+                                                לא מתחבר
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className={td}>{r.email ?? "–"}</td>
+                                    <td className={cn(td, "num text-right")}>{r.phone ?? "–"}</td>
+                                    <td className={td}>
+                                        <div className="flex flex-nowrap gap-2">
+                                            <button className={btn("secondary", "sm")} onClick={() => openEdit(r)}>
+                                                עריכה
+                                            </button>
+                                            <button className={btn("danger", "sm")} onClick={() => handleDelete(r)}>
+                                                מחיקה
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

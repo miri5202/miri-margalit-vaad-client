@@ -6,18 +6,23 @@ import { createCharges } from "../api/charges";
 import type { PaymentCellStatus } from "../types";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
+import PageHeader from "../components/ui/PageHeader";
 import { getErrorMessage } from "../utils/errors";
 import { apartmentLabel } from "../utils/format";
+import { btn, cn, table, tableWrap, td, th } from "../utils/ui";
 
 const MONTHS = ["ינו׳", "פבר׳", "מרץ", "אפר׳", "מאי", "יוני", "יולי", "אוג׳", "ספט׳", "אוק׳", "נוב׳", "דצמ׳"];
 
-const SYMBOLS: Record<PaymentCellStatus, string> = {
-  paid: "✓",
-  partial: "½",
-  pending: "…",
-  late: "!",
-  none: "–",
+// כל משבצת - "חלון" קטן, באותם צבעים כמו באיור הבניין
+const CELL: Record<PaymentCellStatus, { symbol: string; className: string; label: string }> = {
+  paid: { symbol: "✓", className: "bg-sun text-deep", label: "שולם" },
+  partial: { symbol: "½", className: "bg-half text-deep", label: "שולם חלקית" },
+  pending: { symbol: "…", className: "bg-pending text-deep", label: "ממתין" },
+  late: { symbol: "!", className: "bg-late text-deep", label: "באיחור" },
+  none: { symbol: "–", className: "bg-card text-muted border-dashed", label: "לא חויב" },
 };
+
+const cellBase = "inline-grid h-7 w-9 place-items-center rounded-md border-2 border-ink text-sm font-extrabold not-italic";
 
 const currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -46,58 +51,50 @@ function PaymentGridPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1>מי שילם - {grid.year}</h1>
-          <p>דמי ועד לפי דירה וחודש</p>
-        </div>
-        <div className="actions">
-          <button className="btn btn--secondary" onClick={() => setYear(year - 1)}>
-            › שנה קודמת
-          </button>
-          <button className="btn btn--secondary" onClick={() => setYear(year + 1)}>
-            שנה הבאה ‹
-          </button>
-          <button
-            className="btn btn--accent"
-            onClick={() => chargeMutation.mutate()}
-            disabled={chargeMutation.isPending}
-          >
-            {chargeMutation.isPending ? "יוצר..." : "צור חיובי החודש"}
-          </button>
-        </div>
-      </div>
+      <PageHeader title={`מי שילם - ${grid.year}`} subtitle="דמי ועד לפי דירה וחודש">
+        <button className={btn("secondary", "sm")} onClick={() => setYear(year - 1)}>
+          › שנה קודמת
+        </button>
+        <button className={btn("secondary", "sm")} onClick={() => setYear(year + 1)}>
+          שנה הבאה ‹
+        </button>
+        <button className={btn("primary")} onClick={() => chargeMutation.mutate()} disabled={chargeMutation.isPending}>
+          {chargeMutation.isPending ? "יוצר..." : "צור חיובי החודש"}
+        </button>
+      </PageHeader>
 
       {chargeMutation.isSuccess && (
-        <div className="alert alert--success">
-          נוצרו {chargeMutation.data.created} חיובים חדשים
+        <div className="mb-4 rounded-2xl border-2 border-ink bg-mint px-4 py-3 font-medium text-deep" role="status">
+          ✓ נוצרו {chargeMutation.data.created} חיובים חדשים
           {chargeMutation.data.skipped > 0 && ` (${chargeMutation.data.skipped} דירות כבר חויבו)`}
         </div>
       )}
       {chargeMutation.isError && <ErrorMessage message={getErrorMessage(chargeMutation.error)} />}
 
-      <div className="table-wrap section">
-        <table className="table pay-grid">
+      <div className={tableWrap}>
+        <table className={table}>
           <thead>
             <tr>
-              <th>דירה</th>
+              <th className={th}>דירה</th>
               {MONTHS.map((m) => (
-                <th key={m}>{m}</th>
+                <th key={m} className={cn(th, "text-center")}>
+                  {m}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {grid.rows.map((row) => (
-              <tr key={`${row.apartment}-${row.isUnit}`}>
-                <td>
+              <tr key={`${row.apartment}-${row.isUnit}`} className="hover:bg-soft">
+                <td className={cn(td, "whitespace-nowrap")}>
                   <strong>{apartmentLabel(row.apartment, row.isUnit)}</strong>{" "}
-                  <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>
-                    {row.residents.join(", ")}
-                  </span>
+                  <span className="text-xs text-muted">{row.residents.join(", ")}</span>
                 </td>
                 {row.months.map((status, i) => (
-                  <td key={i}>
-                    <span className={`pay-cell pay-cell--${status}`}>{SYMBOLS[status]}</span>
+                  <td key={i} className={cn(td, "px-1.5 text-center")}>
+                    <span className={cn(cellBase, CELL[status].className)} title={`${MONTHS[i]}: ${CELL[status].label}`}>
+                      {CELL[status].symbol}
+                    </span>
                   </td>
                 ))}
               </tr>
@@ -106,12 +103,13 @@ function PaymentGridPage() {
         </table>
       </div>
 
-      <div className="legend">
-        <span><i className="pay-cell pay-cell--paid">✓</i> שולם</span>
-        <span><i className="pay-cell pay-cell--partial">½</i> שולם חלקית</span>
-        <span><i className="pay-cell pay-cell--pending">…</i> ממתין</span>
-        <span><i className="pay-cell pay-cell--late">!</i> באיחור</span>
-        <span><i className="pay-cell pay-cell--none">–</i> לא חויב</span>
+      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+        {(Object.keys(CELL) as PaymentCellStatus[]).map((status) => (
+          <span key={status} className="inline-flex items-center gap-1.5">
+            <i className={cn(cellBase, "h-6 w-7 text-xs", CELL[status].className)}>{CELL[status].symbol}</i>
+            {CELL[status].label}
+          </span>
+        ))}
       </div>
     </>
   );

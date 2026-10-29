@@ -7,6 +7,7 @@ import TransactionsTable from "../components/transactions/TransactionsTable";
 import Pagination from "../components/common/Pagination";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
+import PageHeader from "../components/ui/PageHeader";
 
 function MyPaymentsPage() {
   const { buildingId } = useParams();
@@ -24,12 +25,7 @@ function MyPaymentsPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1>התשלומים שלי</h1>
-          <p>כל החיובים של הדירה שלך</p>
-        </div>
-      </div>
+      <PageHeader title="התשלומים שלי" subtitle="כל החיובים של הדירה שלך" />
 
       <TransactionsTable
         transactions={data.items}

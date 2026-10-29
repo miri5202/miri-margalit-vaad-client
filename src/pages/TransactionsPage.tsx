@@ -12,6 +12,8 @@ import { downloadCsv } from "../utils/csv";
 import { apartmentLabel, formatDate } from "../utils/format";
 import { categoryLabels, paymentMethodLabels, statusLabels, typeLabels } from "../utils/labels";
 import { getErrorMessage } from "../utils/errors";
+import PageHeader from "../components/ui/PageHeader";
+import { btn } from "../utils/ui";
 
 function TransactionsPage() {
   const { buildingId } = useParams();
@@ -92,20 +94,14 @@ function TransactionsPage() {
 
   return (
     <>
-      <div className="page-header">
-        <div>
-          <h1>תנועות</h1>
-          <p>סה"כ {data.total} תנועות</p>
-        </div>
-        <div className="actions">
-          <button className="btn btn--secondary" onClick={handleExport} disabled={isExporting}>
-            {isExporting ? "מייצא..." : "📥 ייצוא"}
-          </button>
-          <Link className="btn btn--accent" to={`/buildings/${id}/transactions/new`}>
-            + תנועה חדשה
-          </Link>
-        </div>
-      </div>
+      <PageHeader title="תנועות" subtitle={`סה"כ ${data.total} תנועות`}>
+        <button className={btn("secondary")} onClick={handleExport} disabled={isExporting}>
+          {isExporting ? "מייצא..." : "📥 ייצוא לאקסל"}
+        </button>
+        <Link className={btn("primary")} to={`/buildings/${id}/transactions/new`}>
+          + תנועה חדשה
+        </Link>
+      </PageHeader>
 
       {partialMutation.isError && <ErrorMessage message={getErrorMessage(partialMutation.error)} />}
 

@@ -5,12 +5,14 @@ import type { TransactionInput } from "../types";
 import TransactionForm from "../components/transactions/TransactionForm";
 import Loader from "../components/common/Loader";
 import ErrorMessage from "../components/common/ErrorMessage";
+import PageHeader from "../components/ui/PageHeader";
 import { getErrorMessage } from "../utils/errors";
+import { card } from "../utils/ui";
 
 function TransactionFormPage() {
   const { buildingId, txId } = useParams();
   const id = Number(buildingId);
-  const isEdit = Boolean(txId); 
+  const isEdit = Boolean(txId);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -26,7 +28,8 @@ function TransactionFormPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["transactions", id] });
       queryClient.invalidateQueries({ queryKey: ["summary", id] });
-      navigate(`/buildings/${id}/transactions`); 
+      queryClient.invalidateQueries({ queryKey: ["payments-grid", id] });
+      navigate(`/buildings/${id}/transactions`);
     },
   });
 
@@ -34,12 +37,10 @@ function TransactionFormPage() {
   if (isEdit && (isError || !existing)) return <ErrorMessage message="התנועה לא נמצאה" />;
 
   return (
-    <div style={{ maxWidth: 720 }}>
-      <div className="page-header">
-        <h1>{isEdit ? "עריכת תנועה" : "תנועה חדשה"}</h1>
-      </div>
+    <div className="max-w-3xl">
+      <PageHeader title={isEdit ? "עריכת תנועה" : "תנועה חדשה"} />
 
-      <div className="card">
+      <div className={card}>
         <TransactionForm
           defaultValues={existing}
           onSubmit={(data) => saveMutation.mutate(data)}
