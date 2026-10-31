@@ -25,21 +25,19 @@ function DashboardPage() {
 
   const now = new Date();
   const year = now.getFullYear();
-  const month = now.getMonth(); // 0 = ינואר
+  const month = now.getMonth(); 
 
   const { data: summary, isLoading, isError } = useQuery({
     queryKey: ["summary", id],
     queryFn: () => getSummary(id),
   });
 
-  // ועד: מי שילם החודש (אותם נתונים כמו בעמוד "מי שילם")
   const { data: grid } = useQuery({
     queryKey: ["payments-grid", id, year],
     queryFn: () => getPaymentsGrid(id, year),
     enabled: isAdmin,
   });
 
-  // דייר: פרטי הבניין (כמה דירות), כדי לצייר את הבניין ולסמן את הדירה שלו
   const { data: building } = useQuery({
     queryKey: ["building", id],
     queryFn: () => getBuilding(id),
@@ -54,7 +52,6 @@ function DashboardPage() {
   if (isLoading) return <Loader />;
   if (isError || !summary) return <ErrorMessage message="לא הצלחנו לטעון את הבניין" />;
 
-  // החלונות של הבניין באיור
   let windows: WindowInfo[] = [];
   if (isAdmin && grid) {
     windows = grid.rows.map((row) => ({
@@ -82,7 +79,6 @@ function DashboardPage() {
       <PageHeader title={summary.building.name} subtitle={`${MONTH_NAMES[month]} ${year} · מצב הקופה של הבניין`} />
 
       <div className="grid items-start gap-6 lg:grid-cols-[1.1fr_1fr]">
-        {/* הבניין: כל חלון הוא דירה */}
         <section className="rounded-3xl border-[2.5px] border-ink bg-sky-fade p-5 sm:p-6">
           <h2 className="text-2xl">{isAdmin ? "מי שילם החודש?" : "הבניין שלנו"}</h2>
           <p className="mb-3 text-sm text-muted">

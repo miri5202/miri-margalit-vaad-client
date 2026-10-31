@@ -6,7 +6,6 @@ interface ExpenseChartProps {
   data: { category: Category; total: number }[];
 }
 
-// גרף עמודות: כמה הוצאנו בכל קטגוריה (העמודה הארוכה = הקטגוריה הגדולה)
 function ExpenseChart({ data }: ExpenseChartProps) {
   if (data.length === 0) {
     return <p className="py-6 text-center text-muted">עדיין אין הוצאות</p>;

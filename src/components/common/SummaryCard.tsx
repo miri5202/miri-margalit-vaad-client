@@ -8,7 +8,6 @@ interface SummaryCardProps {
   note?: string;
 }
 
-// כל סוג נתון - פתק דביק בצבע אחר, קצת עקום
 const NOTE_STYLE = {
   highlight: "bg-sun -rotate-[1.5deg]",
   income: "bg-mint rotate-1",
@@ -16,7 +15,6 @@ const NOTE_STYLE = {
   debt: "bg-sky -rotate-1",
 };
 
-// כרטיס סכום בלוח הראשי, בצורת פתק דביק עם נעץ
 function SummaryCard({ label, value, variant = "highlight", note }: SummaryCardProps) {
   return (
     <div

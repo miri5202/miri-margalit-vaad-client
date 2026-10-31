@@ -36,7 +36,6 @@ function ReceiptPage() {
 
   return (
     <>
-      {/* print:hidden - הכפתורים לא מודפסים */}
       <div className="mb-6 flex justify-center gap-3 print:hidden">
         <button className={btn("primary")} onClick={() => window.print()}>
           🖨️ הדפסה
@@ -47,7 +46,6 @@ function ReceiptPage() {
       </div>
 
       <div className="relative mx-auto max-w-xl rounded-md border-[2.5px] border-ink bg-card px-8 pt-10 pb-8 shadow-sketch-lg print:border-0 print:shadow-none">
-        {/* נייר דבק */}
         <span className="absolute -top-3 right-1/2 h-6 w-28 translate-x-1/2 -rotate-2 bg-sun/75 print:hidden" aria-hidden="true" />
 
         <div className="mb-4 flex items-start justify-between gap-4 border-b-[2.5px] border-ink pb-4">

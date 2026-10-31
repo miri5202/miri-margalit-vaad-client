@@ -12,7 +12,6 @@ interface AnnouncementFormProps {
   serverError?: string;
 }
 
-// טופס הודעה בלוח המודעות - גם להוספה וגם לעריכה
 function AnnouncementForm({ defaultValues, onSubmit, onCancel, isSubmitting, serverError }: AnnouncementFormProps) {
   const {
     register,

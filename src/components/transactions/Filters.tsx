@@ -7,7 +7,6 @@ interface FiltersProps {
   onChange: (filters: TransactionFilters) => void;
 }
 
-// שורת סינון וחיפוש מעל טבלת התנועות
 function Filters({ filters, onChange }: FiltersProps) {
   function update(changes: Partial<TransactionFilters>) {
     onChange({ ...filters, ...changes, page: 1 });

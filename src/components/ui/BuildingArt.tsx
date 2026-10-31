@@ -1,5 +1,4 @@
-// איור לעמודי הכניסה וההרשמה: בניין עם חלונות מוארים, שמש, ענן ועץ
-// (קישוט בלבד - הנתונים האמיתיים מוצגים בלוח הראשי)
+
 function BuildingArt() {
   return (
     <div className="relative min-w-0">
@@ -44,7 +43,6 @@ function BuildingArt() {
         />
       </svg>
 
-      {/* פתקים "מרחפים" מעל האיור */}
       <div className="absolute top-[8%] left-[2%] -rotate-6 rounded-xl border-2 border-ink bg-card px-3 py-1.5 font-hand text-sm font-semibold whitespace-nowrap shadow-sketch-sm">
         דירה 3 שילמה ✓
       </div>

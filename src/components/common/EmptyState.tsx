@@ -5,7 +5,6 @@ interface EmptyStateProps {
   children: ReactNode;
 }
 
-// מצב ריק: אין מה להציג
 function EmptyState({ icon, children }: EmptyStateProps) {
   return (
     <div className="rounded-3xl border-[2.5px] border-ink bg-card px-6 py-12 text-center text-muted">

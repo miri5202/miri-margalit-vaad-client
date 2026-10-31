@@ -1,4 +1,3 @@
-// מצב טעינה: עיגול מסתובב
 function Loader() {
   return (
     <div className="flex flex-col items-center gap-3 py-16 text-muted" role="status">

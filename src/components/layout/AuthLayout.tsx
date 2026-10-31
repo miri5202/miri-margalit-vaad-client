@@ -6,7 +6,6 @@ interface AuthLayoutProps {
   children: ReactNode;
 }
 
-// מבנה עמודי הכניסה וההרשמה: כותרת והטופס מצד אחד, איור הבניין מהצד השני
 function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="min-h-screen bg-paper p-4 sm:p-6 lg:flex lg:items-center">
@@ -29,7 +28,6 @@ function AuthLayout({ children }: AuthLayoutProps) {
             </p>
             {children}
           </div>
-          {/* האיור לא גבוה מ-60% מגובה המסך, כדי שכל העמוד ייכנס בלי גלילה */}
           <div className="mx-auto hidden w-full max-w-[60vh] lg:block">
             <BuildingArt />
           </div>

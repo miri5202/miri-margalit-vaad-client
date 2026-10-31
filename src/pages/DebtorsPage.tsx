@@ -13,7 +13,6 @@ function residentEmails(d: Debtor): string[] {
   return d.residents.map((r) => r.email).filter((email): email is string => Boolean(email));
 }
 
-// קישור שפותח מייל תזכורת מוכן לכל הדיירים של הדירה
 function reminderLink(d: Debtor): string {
   const emails = residentEmails(d).join(",");
   const subject = `תזכורת: דמי ועד - ${apartmentLabel(d.apartment, d.isUnit)}`;

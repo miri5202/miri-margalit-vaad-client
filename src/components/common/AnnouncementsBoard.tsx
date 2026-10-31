@@ -10,17 +10,14 @@ import AnnouncementForm from "./AnnouncementForm";
 interface AnnouncementsBoardProps {
   buildingId: number;
   announcements: Announcement[];
-  canEdit: boolean; // ועד - יכול להוסיף, לערוך ולמחוק
+  canEdit: boolean; 
 }
 
-// כל פתק בצבע וזווית קצת אחרים, כמו בלוח מודעות אמיתי
 const NOTES = ["bg-[#fffdf5] -rotate-2", "bg-[#fff1f0] rotate-[1.5deg]", "bg-[#f0fbf6] -rotate-1"];
 const NOTE_BASE = "relative min-w-0 p-3.5 pt-4 text-deep shadow-[2px_3px_0_rgba(35,48,77,0.35)]";
 
-// לוח המודעות של הבניין: לוח שעם עם פתקים תלויים בנייר דבק
 function AnnouncementsBoard({ buildingId, announcements, canEdit }: AnnouncementsBoardProps) {
   const queryClient = useQueryClient();
-  // "new" = טופס הודעה חדשה פתוח. מספר = עורכים את ההודעה הזו
   const [editing, setEditing] = useState<"new" | number | null>(null);
 
   function refresh() {
@@ -80,7 +77,6 @@ function AnnouncementsBoard({ buildingId, announcements, canEdit }: Announcement
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {/* טופס הודעה חדשה - בצורת פתק */}
         {editing === "new" && (
           <div className={cn(NOTE_BASE, "bg-card")}>
             <h3 className="mb-2 text-base">הודעה חדשה</h3>
@@ -99,7 +95,6 @@ function AnnouncementsBoard({ buildingId, announcements, canEdit }: Announcement
             </div>
           ) : (
             <article key={a.id} className={cn(NOTE_BASE, NOTES[i % NOTES.length])}>
-              {/* נייר דבק */}
               <span className="absolute -top-2.5 right-[30%] h-5 w-16 -rotate-3 bg-sky/70" aria-hidden="true" />
               {a.pinned && (
                 <span className="absolute top-1.5 left-2" title="הודעה נעוצה">

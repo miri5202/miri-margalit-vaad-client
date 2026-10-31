@@ -13,7 +13,6 @@ import { btn, cn, table, tableWrap, td, th } from "../utils/ui";
 
 const MONTHS = ["ינו׳", "פבר׳", "מרץ", "אפר׳", "מאי", "יוני", "יולי", "אוג׳", "ספט׳", "אוק׳", "נוב׳", "דצמ׳"];
 
-// כל משבצת - "חלון" קטן, באותם צבעים כמו באיור הבניין
 const CELL: Record<PaymentCellStatus, { symbol: string; className: string; label: string }> = {
   paid: { symbol: "✓", className: "bg-sun text-deep", label: "שולם" },
   partial: { symbol: "½", className: "bg-half text-deep", label: "שולם חלקית" },

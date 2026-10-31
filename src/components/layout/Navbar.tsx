@@ -5,7 +5,6 @@ import useTheme from "../../hooks/useTheme";
 import Logo from "../ui/Logo";
 import { btn, cn } from "../../utils/ui";
 
-// עיצוב קישור בתפריט. NavLink נותן isActive=true לקישור של העמוד הנוכחי
 function linkClass({ isActive }: { isActive: boolean }) {
   return cn(
     "whitespace-nowrap rounded-full px-3.5 py-1.5 font-medium no-underline transition-colors",

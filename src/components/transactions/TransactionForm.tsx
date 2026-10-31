@@ -14,7 +14,6 @@ interface TransactionFormProps {
 
 const today = new Date().toISOString().slice(0, 10);
 
-// בחירת הכנסה / הוצאה: שני כפתורים, והנבחר צבוע (has-checked = יש בתוכו radio מסומן)
 const typeOption =
   "flex-1 cursor-pointer rounded-xl px-4 py-2 text-center font-bold transition-colors has-checked:bg-sun has-checked:text-deep has-checked:shadow-sketch-sm";
 

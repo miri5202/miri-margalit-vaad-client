@@ -6,7 +6,6 @@ interface PaginationProps {
   onChange: (page: number) => void;
 }
 
-// מעבר בין עמודים ברשימה ארוכה
 function Pagination({ page, pages, onChange }: PaginationProps) {
   if (pages <= 1) return null;
 

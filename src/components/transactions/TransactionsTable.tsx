@@ -16,7 +16,6 @@ interface TransactionsTableProps {
   receiptPath?: (transaction: Transaction) => string;
 }
 
-// טבלת תנועות: משמשת את עמוד התנועות (ועד), "התשלומים שלי" (דייר) ו"הוצאות"
 function TransactionsTable({
   transactions,
   onMarkPaid,
@@ -25,7 +24,6 @@ function TransactionsTable({
   editPath,
   receiptPath,
 }: TransactionsTableProps) {
-  // איזו שורה פתוחה עכשיו לתשלום חלקי, ומה הסכום שהוקלד
   const [partialId, setPartialId] = useState<number | null>(null);
   const [partialAmount, setPartialAmount] = useState("");
 

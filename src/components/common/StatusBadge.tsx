@@ -5,7 +5,6 @@ interface StatusBadgeProps {
   status: Status;
 }
 
-// צבע התווית לפי הסטטוס (אותם צבעים כמו החלונות באיור הבניין)
 const COLORS: Record<Status, string> = {
   paid: "bg-mint",
   partial: "bg-half",

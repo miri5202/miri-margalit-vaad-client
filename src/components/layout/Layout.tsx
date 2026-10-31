@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 
-// מבנה כל העמודים אחרי ההתחברות: תפריט עליון + אזור התוכן
 function Layout() {
   return (
     <div className="min-h-screen bg-paper">

@@ -1,13 +1,11 @@
 import api from "./client";
 import type { Announcement, AnnouncementInput } from "../types";
 
-// לוח המודעות של הבניין (כל דיירי הבניין רואים)
 export async function getAnnouncements(buildingId: number): Promise<Announcement[]> {
   const response = await api.get<Announcement[]>(`/buildings/${buildingId}/announcements`);
   return response.data;
 }
 
-// הוספה, עריכה ומחיקה - לוועד בלבד
 export async function createAnnouncement(buildingId: number, data: AnnouncementInput): Promise<Announcement> {
   const response = await api.post<Announcement>(`/buildings/${buildingId}/announcements`, data);
   return response.data;
